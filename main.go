@@ -14,7 +14,6 @@ type errMsg error
 
 type model struct {
 	// spinner      spinner.Model
-	quitting     bool
 	err          error
 	x            int
 	y            int
@@ -45,7 +44,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		if key.Matches(msg, quitKeys) {
-			m.quitting = true
 			return m, tea.Quit
 
 		}
@@ -78,16 +76,12 @@ func (m model) View() string {
 	if m.err != nil {
 		return m.err.Error()
 	}
-	str := fmt.Sprintf("\n\nMouse: %d %d\nWindow: %d %d \n %s\n\n",
+	str := fmt.Sprintf("\n\nMouse: %d %d\nWindow: %d %d",
 		// m.spinner.View(),
 		m.x,
 		m.y,
 		m.canvasWidth,
-		m.canvasHeight,
-		quitKeys.Help().Desc)
-	if m.quitting {
-		return str + "\n"
-	}
+		m.canvasHeight,)
 
 	return str
 }
