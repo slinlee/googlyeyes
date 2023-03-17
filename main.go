@@ -5,15 +5,12 @@ import (
 	"os"
 
 	"github.com/charmbracelet/bubbles/key"
-	// "github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
-	// "github.com/charmbracelet/lipgloss"
 )
 
 type errMsg error
 
 type model struct {
-	// spinner      spinner.Model
 	err          error
 	x            int
 	y            int
@@ -27,15 +24,10 @@ var quitKeys = key.NewBinding(
 )
 
 func initialModel() model {
-	// s := spinner.New()
-	// s.Spinner = spinner.Dot
-	// s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	// return model{spinner: s}
 	return model{}
 }
 
 func (m model) Init() tea.Cmd {
-	// return m.spinner.Tick
 	return nil
 }
 
@@ -45,7 +37,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		if key.Matches(msg, quitKeys) {
 			return m, tea.Quit
-
 		}
 		return m, nil
 	case tea.MouseMsg:
@@ -66,7 +57,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	default:
 		var cmd tea.Cmd
-		// m.spinner, cmd = m.spinner.Update(msg)
 		return m, cmd
 	}
 	return m, nil
@@ -77,11 +67,10 @@ func (m model) View() string {
 		return m.err.Error()
 	}
 	str := fmt.Sprintf("\n\nMouse: %d %d\nWindow: %d %d",
-		// m.spinner.View(),
 		m.x,
 		m.y,
 		m.canvasWidth,
-		m.canvasHeight,)
+		m.canvasHeight)
 
 	return str
 }
