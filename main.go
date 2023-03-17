@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -66,13 +67,40 @@ func (m model) View() string {
 	if m.err != nil {
 		return m.err.Error()
 	}
-	str := fmt.Sprintf("\n\nMouse: %d %d\nWindow: %d %d",
+	str := fmt.Sprintf("\n\nMouse: %d %d\nWindow: %d %d\n\n%s",
 		m.x,
 		m.y,
 		m.canvasWidth,
-		m.canvasHeight)
+		m.canvasHeight,
+		drawCircle(16),
+	)
 
 	return str
+}
+
+func drawCircle(radius int) string {
+	s := "--\n"
+	vChars := 2 * radius
+	hChars := 2 * radius * 2      // double the width for each 'pixel'
+	center := float64(radius + 2) // hard coded
+
+	for j := 0; j <= vChars-1; j++ {
+		y := float64(j) + float64(0.5)
+		for i := 0; i <= hChars-1; i++ {
+			// edge := float64(x*x+y*y) / float64(r-r)
+			x := 2 * (float64(i) + float64(0.5))
+			dist := math.Sqrt((x-center)*(x-center) + (y-center)*(y-center))
+
+			if dist > float64(radius-1) && dist < float64(radius+1) {
+				s += "**"
+			} else {
+				s += "--"
+			}
+		}
+		s += "\n"
+	}
+	return s
+
 }
 
 func main() {
