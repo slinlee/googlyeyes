@@ -16,6 +16,8 @@ type model struct {
 	spinner  spinner.Model
 	quitting bool
 	err      error
+	x int
+	y int
 }
 
 var quitKeys = key.NewBinding(
@@ -44,6 +46,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		}
 		return m, nil
+	case tea.MouseMsg:
+		switch msg.Type {
+				case tea.MouseLeft:
+				case tea.MouseMotion:
+					m.x = msg.X
+					m.y = msg.Y
+
+					return m, nil
+			}
 	case errMsg:
 		m.err = msg
 		return m, nil
@@ -53,21 +64,29 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.spinner, cmd = m.spinner.Update(msg)
 		return m, cmd
 	}
+	return m, nil
 }
 
 func (m model) View() string {
 	if m.err != nil {
 		return m.err.Error()
 	}
-	str := fmt.Sprintf("\n\n   %s Loading forever... %s\n\n", m.spinner.View(), quitKeys.Help().Desc)
+	str := fmt.Sprintf("\n\n   %s Loading forever...%d %d %s\n\n",  
+		m.spinner.View(), 
+		m.x, 
+		m.y,
+		quitKeys.Help().Desc)
 	if m.quitting {
 		return str + "\n"
 	}
+
 	return str
 }
 
 func main() {
-	p := tea.NewProgram(initialModel())
+	p := tea.NewProgram(initialModel(), 
+		tea.WithAltScreen(),
+		tea.WithMouseAllMotion())
 	if _, err := p.Run(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
